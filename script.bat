@@ -32,6 +32,10 @@ secedit /configure /db %TEMP%\secedit.sdb /cfg %TEMP%\secpol.cfg
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v fAllowToGetHelp /t REG_DWORD /d 0 /f
 sc config eventlog start= auto
 sc start eventlog
+
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" /v "EnableSecuritySignature" /t REG_DWORD /d 1 /f
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" /v "RequireSecuritySignature" /t REG_DWORD /d 1 /f
+auditpol /set /category:"Object Access" /subcategory:"File Share" /failure:enable
 ::make an output file in downloads
 setlocal
 set outputFile=%USERPROFILE%\Downloads\security_report.txt
@@ -39,6 +43,7 @@ echo Security Report > "%outputFile%"
 echo ================== >> "%outputFile%"
 echo. >> "%outputFile%"
 echo Users with Administrator Privileges: >> "%outputFile%"
+echo. >> "%outputFile%"
 net localgroup administrators >> "%outputFile%"
 echo. >> "%outputFile%"
 echo Unauthorized File Shares: >> "%outputFile%"
